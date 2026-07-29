@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Stop the local erpnext-mcp-chatbot proxy + tunnel (ERPNext itself keeps
+# running via Docker; this mirrors tally-chatbot/odoo19-mcp-chatbot's stop).
+
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+echo -e "${GREEN}Stopping ERPNext Chatbot services...${NC}\n"
+
+if pgrep -f "erpnext-mcp-chatbot/watch-tunnel.sh" > /dev/null; then
+  pkill -f "erpnext-mcp-chatbot/watch-tunnel.sh"
+  echo -e "${GREEN}✓ Stopped tunnel watcher${NC}"
+else
+  echo "  Tunnel watcher not running"
+fi
+
+if pgrep -f "cloudflared tunnel --url http://localhost:8789" > /dev/null; then
+  pkill -f "cloudflared tunnel --url http://localhost:8789"
+  echo -e "${GREEN}✓ Stopped cloudflared tunnel${NC}"
+fi
+
+if pgrep -f "uvicorn.*port 8789" > /dev/null; then
+  pkill -f "uvicorn.*port 8789"
+  echo -e "${GREEN}✓ Stopped proxy server${NC}"
+else
+  echo "  Proxy not running"
+fi
+
+sleep 1
+
+echo -e "\n${GREEN}All local services stopped.${NC}"
+echo "Note: ERPNext itself (Docker) keeps running — 'cd frappe_docker && docker compose -f pwd.yml -p erpnext down' to stop that too."
+echo -e "Log files still available:"
+echo "  /tmp/erpnext-proxy.log"
+echo "  /tmp/erpnext-cloudflared.log"
+echo "  /tmp/erpnext-tunnel-watch.log"

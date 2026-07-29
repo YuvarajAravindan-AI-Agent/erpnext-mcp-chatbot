@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "erpnext": {
+      "command": "node",
+      "args": ["/home/yuvaraj/Projects/erpnext-mcp-chatbot/erpnext-mcp-server/build/index.js"],
+      "env": {
+        "ERPNEXT_URL": "http://localhost:8080",
+        "ERPNEXT_API_KEY": "245a82d24fa71a0",
+        "ERPNEXT_API_SECRET": "c7c8cd4329e2876"
+      }
+    }
+  }
+}
